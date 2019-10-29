@@ -26,8 +26,8 @@ class Manager:
     def __init__(self):
         self.currentStage = GameStage.INITIAL
 
-x_max = 160
-y_max = 160
+x_max = 200
+y_max = 200
 
 pygame.init()
 manager = Manager()
@@ -46,7 +46,6 @@ civ2Mods = [1, 1, 1, 1, 1]
 
 civ_1 = civilization.Civilization(cell.CellType.CIV1, civ2Mods)
 
-
 screen = pygame.display.set_mode(windowSize)
 start_time = time.clock()
 
@@ -56,7 +55,7 @@ while 1:
             sys.exit()
 
     screen.fill((0, 0, 0, 0))  # draw blank screen
-    
+
     if manager.currentStage == GameStage.INITIAL:
         mapGenerator = mapGen.MapGen(x_max, y_max, land_layer)
         land_layer = mapGenerator.generateMap()
@@ -66,14 +65,16 @@ while 1:
         manager.currentStage = GameStage.EXPAND
     elif manager.currentStage == GameStage.EXPAND:
         civ_layer = civ_1.expand(land_layer, civ_layer)     
+        if(civ_1.checkIfDone()):
+            sys.exit()
 
 ##    pressed = pygame.key.get_pressed()
 
-    land_layer.update_map()
-    civ_layer.update_map()
+#   land_layer.update_map()
+#    civ_layer.update_map()
 
-    land_layer.draw_map(screen)    
-    civ_layer.draw_map(screen)
+#    land_layer.draw_map(screen)    
+#    civ_layer.draw_map(screen)
 
     pygame.display.flip()  # next frame
 

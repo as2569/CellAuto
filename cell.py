@@ -21,20 +21,21 @@ class CellType(enumerate):
     MOUNTAIN = 5
     CIV1 = 6
     CIV2 = 7
-    
+
 class Cell:
     def __init__(self, x, y, size):
         self.state = 0
         self.posX = x * size
         self.posY = y * size
         self.image = pygame.Surface((size, size), pygame.SRCALPHA)
+        #self.image = pygame.image.load('square.png')
         self.rect = self.image.get_rect()
         self.rect = self.rect.move(x * size, y * size)
         return
 
     def get_state(self):
         return self.state
-    
+
     def set_state(self, cell_type):
         self.state = cell_type
 
