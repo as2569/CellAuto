@@ -63,8 +63,9 @@ while 1:
     elif manager.currentStage == GameStage.SEEDCIV:
         civ_layer = civ_1.seed_civ(land_layer, civ_layer)
         manager.currentStage = GameStage.EXPAND
+        #land_layer = land_layer.remove_sea()
     elif manager.currentStage == GameStage.EXPAND:
-        civ_layer = civ_1.expand(land_layer, civ_layer)     
+        civ_layer = civ_1.expand(land_layer, civ_layer)
         if(civ_1.checkIfDone()):
             sys.exit()
 

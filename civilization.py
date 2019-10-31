@@ -39,10 +39,14 @@ class Civilization:
         local_layer = layer
         for key in self.borders:
             #print('eval')
-            numCoast = local_layer.moore(cell.CellType.COAST, key[0], key[1], 1)
-            numPlains = local_layer.moore(cell.CellType.PLAINS, key[0], key[1], 1)
-            numHills = local_layer.moore(cell.CellType.HILL, key[0], key[1], 1)
-            mooreNeighbors = local_layer.moore(self.type, key[0], key[1], 1)
+            numCoast = local_layer.mooreFast(cell.CellType.COAST, key[0], key[1])
+            numPlains = local_layer.mooreFast(cell.CellType.PLAINS, key[0], key[1])
+            numHills = local_layer.mooreFast(cell.CellType.HILL, key[0], key[1])
+            mooreNeighbors = local_layer.mooreFast(self.type, key[0], key[1])
+            #numCoast = local_layer.moore(cell.CellType.COAST, key[0], key[1], 1)
+            #numPlains = local_layer.moore(cell.CellType.PLAINS, key[0], key[1], 1)
+            #numHills = local_layer.moore(cell.CellType.HILL, key[0], key[1], 1)
+            #mooreNeighbors = local_layer.moore(self.type, key[0], key[1], 1)
             neumannNeighbors = local_layer.neumann(self.type, key[0], key[1], 1)
             totalValue = numCoast * self.coastMod\
                          + numPlains * self.plainsMod\
