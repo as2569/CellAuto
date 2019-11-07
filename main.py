@@ -63,7 +63,6 @@ while 1:
     elif manager.currentStage == GameStage.SEEDCIV:
         civ_layer = civ_1.seed_civ(land_layer, civ_layer)
         manager.currentStage = GameStage.EXPAND
-        #land_layer = land_layer.remove_sea()
     elif manager.currentStage == GameStage.EXPAND:
         civ_layer = civ_1.expand(land_layer, civ_layer)
         if(civ_1.checkIfDone()):
@@ -71,10 +70,10 @@ while 1:
 
 ##    pressed = pygame.key.get_pressed()
 
-#   land_layer.update_map()
+#    land_layer.update_map()
 #    civ_layer.update_map()
 
-#    land_layer.draw_map(screen)    
+#    land_layer.draw_map(screen)
 #    civ_layer.draw_map(screen)
 
     pygame.display.flip()  # next frame

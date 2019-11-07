@@ -12,7 +12,7 @@ class Maps:
         for x in range(0, self.mapWidth):
             for y in range(0, self.mapHeight):
                 self.matrix[(x, y)] = cell.Cell(x, y, self.cellSize)
-        self.set_neighbors()
+        self.setMooreNeighbors()
         return
 
     def get_state(self, x, y):
@@ -21,17 +21,29 @@ class Maps:
         else:
             return self.matrix[(x, y)].state
 
-    def set_neighbors(self):
+    def setMooreNeighbors(self):
         for x in range(0, self.mapWidth):
             for y in range(0, self.mapHeight):
-                self.set_neighbor(x,y)
+                self.setMooreNeighbor(x,y)
 
-    def set_neighbor(self, x, y):
+    def setMooreNeighbor(self, x, y):
         vals = [(x-1, y+1), (x, y+1), (x+1, y+1), (x-1, y), (x,y), (x+1, y), (x-1, y-1), (x, y-1), (x+1, y-1)]
         for val in vals:
             if (val[0] > self.mapWidth - 1 or val[0] < 0 or val[1] > self.mapHeight - 1 or val[1] < 0) == False:
-                self.matrix[(x, y)].neighbors.append(self.matrix[(val[0], val[1])])
+                self.matrix[(x, y)].mooreNeighbors.append(self.matrix[(val[0], val[1])])
 
+    def setAllMooreNums(self):
+        for x in range(0, self.mapWidth):
+            for y in range(0, self.mapHeight):
+                self.setMooreNums(x, y)
+
+    def setMooreNums(self, x, y):
+        self.matrix[(x,y)].numSea = self.mooreFast(cell.CellType.SEA, x, y)
+        self.matrix[(x,y)].numCoast = self.mooreFast(cell.CellType.COAST, x, y)
+        self.matrix[(x,y)].numPlains = self.mooreFast(cell.CellType.PLAINS, x, y)
+        self.matrix[(x,y)].numHill = self.mooreFast(cell.CellType.HILL, x, y)
+
+    # get Neumann neighbors
     def neumann(self, target_type, x, y, r):
         count = 0
         if self.get_state(x - 1, y) == target_type:
@@ -44,6 +56,7 @@ class Maps:
             count += 1
         return count
 
+    # get LIST of Neumann neighbors by index
     def getNeumannNeighbors(self, x, y):
         n = []
         if self.get_state(x - 1, y) != cell.CellType.SEA:
@@ -56,6 +69,7 @@ class Maps:
             n.append((x, y + 1))
         return n
 
+    # get Moore neighbors by index
     def moore(self, in_type, x, y):
         count = 0
         if self.get_state(x, y) == in_type: # self
@@ -78,6 +92,7 @@ class Maps:
             count += 1
         return count
 
+    # get Moore neighbors by range
     def moore(self, in_type, xPos, yPos, r): #counts self
         count = 0
         for x in range(xPos - r, xPos + r + 1):
@@ -87,9 +102,10 @@ class Maps:
                         count += 1
         return count
 
+    # get Moore neighbors from list
     def mooreFast(self, in_type, x, y):
         count = 0
-        for n in self.matrix[(x,y)].neighbors:
+        for n in self.matrix[(x,y)].mooreNeighbors:
             if n.get_state == in_type:
                 count = count + 1
         return count

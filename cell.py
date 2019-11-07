@@ -31,7 +31,12 @@ class Cell:
         #self.image = pygame.image.load('square.png')
         self.rect = self.image.get_rect()
         self.rect = self.rect.move(x * size, y * size)
-        self.neighbors = []
+        self.mooreNeighbors = []
+        self.neumannNeighbors = []
+        self.numSea = 0
+        self.numCoast = 0
+        self.numPlains = 0
+        self.numHill = 0
         return
 
     def get_state(self):

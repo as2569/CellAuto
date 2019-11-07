@@ -39,20 +39,18 @@ class Civilization:
         local_layer = layer
         for key in self.borders:
             #print('eval')
-            numCoast = local_layer.mooreFast(cell.CellType.COAST, key[0], key[1])
-            numPlains = local_layer.mooreFast(cell.CellType.PLAINS, key[0], key[1])
-            numHills = local_layer.mooreFast(cell.CellType.HILL, key[0], key[1])
+            #numCoast = local_layer.mooreFast(cell.CellType.COAST, key[0], key[1])
+            #numPlains = local_layer.mooreFast(cell.CellType.PLAINS, key[0], key[1])
+            #numHills = local_layer.mooreFast(cell.CellType.HILL, key[0], key[1])
             mooreNeighbors = local_layer.mooreFast(self.type, key[0], key[1])
-            #numCoast = local_layer.moore(cell.CellType.COAST, key[0], key[1], 1)
-            #numPlains = local_layer.moore(cell.CellType.PLAINS, key[0], key[1], 1)
-            #numHills = local_layer.moore(cell.CellType.HILL, key[0], key[1], 1)
-            #mooreNeighbors = local_layer.moore(self.type, key[0], key[1], 1)
             neumannNeighbors = local_layer.neumann(self.type, key[0], key[1], 1)
-            totalValue = numCoast * self.coastMod\
-                         + numPlains * self.plainsMod\
-                         + numHills * self.hillsMod \
+
+            totalValue = local_layer.matrix[key[0], key[1]].numCoast * self.coastMod \
+                         + local_layer.matrix[key[0], key[1]].numPlains * self.plainsMod \
+                         + local_layer.matrix[key[0], key[1]].numHill * self.hillsMod \
                          + mooreNeighbors * self.mooreMod \
                          + neumannNeighbors * self.neumannMod
+
             self.borders[key] = totalValue
         return
 
@@ -81,17 +79,19 @@ class Civilization:
     def find_initial(self, landLayer, civLayer):
         local_layer = landLayer
         local_civ = civLayer
+        local_layer.setAllMooreNums()
+
         self.borders.clear()
-        
+
         for x in range(0, local_layer.mapWidth):
             for y in range(0, local_layer.mapHeight):
                 if local_layer.matrix[(x, y)].state == cell.CellType.PLAINS or local_layer.matrix[(x, y)].state == cell.CellType.HILL:
                     self.borders[(x, y)] = 0
-                    
+
         self.evaluate_borders(local_layer)
         best_location = self.find_best()
         local_civ.matrix[best_location].set_state(self.type)
-        
+
         manager.currentStage = GameStage.EXPAND
         return local_civ
 
@@ -100,7 +100,7 @@ class Civilization:
         local_civ = civLayer
         self.borders.clear()
         self.potentialSeeds.clear()
-        
+
         for x in range(0, local_layer.mapWidth):
             for y in range(0, local_layer.mapHeight):
                 if local_layer.matrix[(x, y)].state == cell.CellType.PLAINS:
@@ -109,8 +109,8 @@ class Civilization:
         initPos = self.potentialSeeds[random.randrange(0, len(self.potentialSeeds))]
         local_civ.matrix[initPos].set_state(self.type)
         self.borders[initPos] = 0
-        
+
         self.update_borders(local_layer, local_civ, initPos)
         self.evaluate_borders(local_layer)
-        
+
         return local_civ
